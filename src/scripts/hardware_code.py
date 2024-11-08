@@ -1,28 +1,15 @@
-from owl_client import OwlClient, Joint
+from owl_client import OwlClient, Pose
 import time
 import math
 
 client = OwlClient("10.42.0.54")
-jointSpeed = 50  # degrees/sec
+toolSpeed = 0.1  # Set an appropriate tool speed for the movement
 
-# Wait for robot to be available
+# Wait for the robot to be available
 while not client.is_running():
     time.sleep(0.2)
 
-# Define the zero configuration for the robot
-zero_position = Joint()
-zero_position.Base = 0.0
-zero_position.Shoulder = 0.0
-zero_position.Elbow = 0.0
-zero_position.Wrist1 = 0.0
-zero_position.Wrist2 = 0.0
-zero_position.Wrist3 = 0.0
-
-# Move robot to zero configuration initially
-client.move_to_joint(zero_position, jointSpeed)
-time.sleep(1)
-
-# Define the circular trajectory function
+# Define a circular trajectory in Cartesian space
 def circular_trajectory(center_x, center_y, center_z, radius, steps=72):
     waypoints = []
     angle_step = 2 * math.pi / steps
@@ -30,29 +17,32 @@ def circular_trajectory(center_x, center_y, center_z, radius, steps=72):
     # Generate waypoints around the circle in the x-y plane
     for i in range(steps + 1):
         angle = i * angle_step
+        waypoint = Pose()
+        
+        # Position for circular motion in x-y plane, z remains constant
+        waypoint.x = center_x + radius * math.cos(angle)
+        waypoint.y = center_y + radius * math.sin(angle)
+        waypoint.z = center_z
 
-        # Set joint positions for circular motion in x-y plane
-        waypoint = Joint()
-        waypoint.Base = center_x + radius * math.cos(angle)
-        waypoint.Shoulder = center_y + radius * math.sin(angle)
-        waypoint.Elbow = center_z  # Keep z constant
+        # Orientation (rx, ry, rz) can be set as needed
+        waypoint.rx = 0.0  # Replace with desired roll in radians
+        waypoint.ry = 0.0  # Replace with desired pitch in radians
+        waypoint.rz = 0.0  # Replace with desired yaw in radians
 
         waypoints.append(waypoint)
 
     return waypoints
 
-# Generate a circular trajectory with given parameters
-center_x = 0.0  # Replace with center x-coordinate
-center_y = 0.0  # Replace with center y-coordinate
-center_z = -1.57  # Replace with center z-coordinate (constant height)
-radius = 0.1  # Replace with desired radius
+# Generate the trajectory waypoints
+center_x = 0.0  # Center x-coordinate
+center_y = 0.0  # Center y-coordinate
+center_z = 0.5  # Constant z-coordinate
+radius = 0.1  # Radius of the circular path
 waypoints = circular_trajectory(center_x, center_y, center_z, radius)
 
-# Execute the trajectory
+# Execute each waypoint in Cartesian space
 for waypoint in waypoints:
-    client.move_to_joint(waypoint, jointSpeed)
-    time.sleep(0.1)  # Adjust delay for smoother movement
+    client.move_to_pose(waypoint, toolSpeed, wait=True, relative=False, moveType=TrajectoryPlanMode.STRAIGHT)
+    time.sleep(0.1)  # Adjust delay for smoother movement if needed
 
-# Return to zero position after the trajectory
-client.move_to_joint(zero_position, jointSpeed)
 print("============ Task Complete")
