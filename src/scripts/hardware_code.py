@@ -1,109 +1,58 @@
-from owl_client import OwlClient, Joint, Pose
+from owl_client import OwlClient, Joint
 import time
 import math
 
-class OwlRobotController:
-    """OwlRobotController for controlling hardware using OwlClient"""
+client = OwlClient("10.42.0.54")
+jointSpeed = 50  # degrees/sec
 
-    def __init__(self, ip_address="10.42.0.54"):
-        # Initialize OwlClient connection
-        self.client = OwlClient(ip_address)
-        self.tool_speed = 100  # mm/sec
+# Wait for robot to be available
+while not client.is_running():
+    time.sleep(0.2)
 
-        # Wait for the robot to be available
-        while not self.client.is_running():
-            time.sleep(0.2)
-        print("Robot is now available for control.")
+# Define the zero configuration for the robot
+zero_position = Joint()
+zero_position.Base = 0.0
+zero_position.Shoulder = 0.0
+zero_position.Elbow = 0.0
+zero_position.Wrist1 = 0.0
+zero_position.Wrist2 = 0.0
+zero_position.Wrist3 = 0.0
 
-    def go_to_joint_goal(self, joint_position):
-        """
-        Move the robot to a specified joint goal asynchronously.
-        joint_position: A dictionary with joint names as keys and angles in radians as values.
-        """
-        # Initialize a Joint object with the provided joint goal
-        joint_goal = Joint()
-        joint_goal.Base = joint_position.get("Base", 0.0)
-        joint_goal.Shoulder = joint_position.get("Shoulder", 0.0)
-        joint_goal.Elbow = joint_position.get("Elbow", -math.pi / 2)
-        joint_goal.Wrist1 = joint_position.get("Wrist1", 0.0)
-        joint_goal.Wrist2 = joint_position.get("Wrist2", 0.0)
-        joint_goal.Wrist3 = joint_position.get("Wrist3", 0.0)
+# Move robot to zero configuration initially
+client.move_to_joint(zero_position, jointSpeed)
+time.sleep(1)
 
-        # Move to joint position asynchronously
-        self.client.move_to_joint(joint_goal, 50, wait=False)
-        time.sleep(1)
-        self.client.move_abort()
-        print("Moved to joint goal:", joint_position)
+# Define the circular trajectory function
+def circular_trajectory(center_x, center_y, center_z, radius, steps=72):
+    waypoints = []
+    angle_step = 2 * math.pi / steps
 
-    def go_to_pose_goal(self, pose_position):
-        """
-        Move the robot to a specified pose goal asynchronously.
-        pose_position: A dictionary with pose (x, y, z, roll, pitch, yaw) in meters and radians.
-        """
-        # Initialize a Pose object with the provided pose goal
-        pose_goal = Pose()
-        pose_goal.x = pose_position.get("x", -0.176)
-        pose_goal.y = pose_position.get("y", -0.240204)
-        pose_goal.z = pose_position.get("z", 0.489203)
-        pose_goal.roll = pose_position.get("roll", 3.1376)
-        pose_goal.pitch = pose_position.get("pitch", -0.087288)
-        pose_goal.yaw = pose_position.get("yaw", 1.56449)
+    # Generate waypoints around the circle in the x-y plane
+    for i in range(steps + 1):
+        angle = i * angle_step
 
-        # Move to pose position asynchronously
-        self.client.move_to_pose(pose_goal, self.tool_speed, wait=False)
-        time.sleep(1)
-        self.client.move_abort()
-        print("Moved to pose goal:", pose_position)
+        # Set joint positions for circular motion in x-y plane
+        waypoint = Joint()
+        waypoint.Base = center_x + radius * math.cos(angle)
+        waypoint.Shoulder = center_y + radius * math.sin(angle)
+        waypoint.Elbow = center_z  # Keep z constant
 
-    def go_to_circular_path(self, center, radius, steps=36):
-        """
-        Generates and moves the robot along a circular path in the x-y plane.
-        center: A dictionary with x, y, and z coordinates of the circle's center.
-        radius: The radius of the circular path.
-        steps: Number of waypoints to define the circle (default is 36 for a 10-degree increment).
-        """
-        # Generate waypoints around the circle
-        for i in range(steps + 1):
-            angle = 2 * math.pi * i / steps  # Calculate angle for each waypoint
+        waypoints.append(waypoint)
 
-            # Define waypoint positions based on the circle's center and radius
-            pose_goal = Pose()
-            pose_goal.x = center["x"] + radius * math.cos(angle)
-            pose_goal.y = center["y"] + radius * math.sin(angle)
-            pose_goal.z = center["z"]
-            pose_goal.roll = 3.1376  # Use fixed roll, pitch, yaw as example
-            pose_goal.pitch = -0.087288
-            pose_goal.yaw = 1.56449
+    return waypoints
 
-            # Move to each waypoint in sequence
-            self.client.move_to_pose(pose_goal, self.tool_speed, wait=True)  # Wait for each pose
-            print(f"Reached waypoint at angle {math.degrees(angle)} degrees")
+# Generate a circular trajectory with given parameters
+center_x = 0.0  # Replace with center x-coordinate
+center_y = 0.0  # Replace with center y-coordinate
+center_z = -1.57  # Replace with center z-coordinate (constant height)
+radius = 0.1  # Replace with desired radius
+waypoints = circular_trajectory(center_x, center_y, center_z, radius)
 
+# Execute the trajectory
+for waypoint in waypoints:
+    client.move_to_joint(waypoint, jointSpeed)
+    time.sleep(0.1)  # Adjust delay for smoother movement
 
-def main():
-    # Initialize the OwlRobotController
-    robot_controller = OwlRobotController()
-
-    # Define the joint goal as a dictionary with joint angles in radians
-    joint_goal = {
-        "Base": 0.0,
-        "Shoulder": 0.0,
-        "Elbow": -math.pi / 2,   # -90 degrees in radians
-        "Wrist1": 0.0,
-        "Wrist2": 0.0,
-        "Wrist3": 0.0
-    }
-    
-    # Move to the joint goal
-    robot_controller.go_to_joint_goal(joint_goal)
-
-    # Define the center and radius for the circular path
-    center = {"x": 0.5, "y": 0.1, "z": 0.4}
-    radius = 0.1
-    
-    # Move in a circular path
-    robot_controller.go_to_circular_path(center, radius)
-
-
-if __name__ == "__main__":
-    main()
+# Return to zero position after the trajectory
+client.move_to_joint(zero_position, jointSpeed)
+print("============ Task Complete")
