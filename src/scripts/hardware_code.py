@@ -1,6 +1,8 @@
-from owl_client import OwlClient, Pose
+from owl_client import OwlClient, Pose,TrajectoryPlanMode
 import time
 import math
+import numpy as np
+
 
 client = OwlClient("10.42.0.54")
 toolSpeed = 0.1  # Set an appropriate tool speed for the movement
@@ -25,7 +27,7 @@ def circular_trajectory(center_x, center_y, center_z, radius, steps=72):
         waypoint.z = center_z
 
         # Orientation (rx, ry, rz) can be set as needed
-        waypoint.rx = 0.0  # Replace with desired roll in radians
+        waypoint.rx = np.pi  # Replace with desired roll in radians
         waypoint.ry = 0.0  # Replace with desired pitch in radians
         waypoint.rz = 0.0  # Replace with desired yaw in radians
 
@@ -34,9 +36,9 @@ def circular_trajectory(center_x, center_y, center_z, radius, steps=72):
     return waypoints
 
 # Generate the trajectory waypoints
-center_x = 0.0  # Center x-coordinate
-center_y = 0.0  # Center y-coordinate
-center_z = 0.5  # Constant z-coordinate
+center_x = 0.623  # Center x-coordinate
+center_y = 0.0589  # Center y-coordinate
+center_z = 0.393  # Constant z-coordinate
 radius = 0.1  # Radius of the circular path
 waypoints = circular_trajectory(center_x, center_y, center_z, radius)
 
