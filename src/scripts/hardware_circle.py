@@ -6,7 +6,7 @@ import numpy as np
 
 client = OwlClient("10.42.0.54")
 toolSpeed = 0.1  # Set an appropriate tool speed for the movement
-
+      
 # Wait for the robot to be available
 while not client.is_running():
     time.sleep(0.2)
