@@ -3,7 +3,7 @@ import time
 import numpy as np
 
 client = OwlClient("10.42.0.54")
-toolSpeed = 10  # Set an appropriate tool speed for the movement
+toolSpeed = 35  # Set an appropriate tool speed for the movement
 
 # Wait for the robot to be available
 while not client.is_running():
@@ -43,8 +43,8 @@ def square_trajectory(center_x, center_y, center_z, side_length):
 # Generate the trajectory waypoints for a square path
 center_x = 0.623  # Center x-coordinate
 center_y = 0.0589  # Center y-coordinate
-center_z = 0.393  # Constant z-coordinate
-side_length = 1.0  # Side length of the square
+center_z = 0.42  # Constant z-coordinate
+side_length = 0.1  # Side length of the square
 waypoints = square_trajectory(center_x, center_y, center_z, side_length)
 
 # Execute each waypoint in Cartesian space
