@@ -57,10 +57,16 @@ To use the OWL Python client, ensure it is installed. Currently, it can only be 
     Python 3.8.10 (default)
     >>> from owl_client import OwlClient
     >>>
+   
+   
+## Running the simulation
+   ```bash
+   cd orangewood_ws/sec/my_owl_codes/src/sim_codes/
+   python3 waypoinst_sim.py
+   
 ## Running the code
-
-```bash
-cd orangewood_ws/src/my_owl_codes/src/scripts
-python3 hardware_design.py
+   ```bash
+   cd orangewood_ws/src/my_owl_codes/src/hardware_scripts
+   python3 hardware_code.py
 
 
