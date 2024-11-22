@@ -1,0 +1,39 @@
+{
+  "configurations": [
+    {
+      "browse": {
+        "databaseFilename": "${default}",
+        "limitSymbolsToIncludedHeaders": false
+      },
+      "includePath": [
+        "/home/aarav2708/orangewood_ws/devel/include/**",
+        "/home/aarav2708/open_x/devel/include/**",
+        "/opt/ros/noetic/include/**",
+        "/home/aarav2708/orangewood_ws/src/orangewood_sim_stack/3rd_party_pkgs/gazebo_grasp_plugin/include/**",
+        "/home/aarav2708/orangewood_ws/src/orangewood_sim_stack/3rd_party_pkgs/gazebo_state_plugins/include/**",
+        "/home/aarav2708/orangewood_ws/src/orangewood_sim_stack/3rd_party_pkgs/gazebo_test_tools/include/**",
+        "/home/aarav2708/orangewood_ws/src/orangewood_sim_stack/3rd_party_pkgs/gazebo_version_helpers/include/**",
+        "/home/aarav2708/orangewood_ws/src/orangewood_sim_stack/3rd_party_pkgs/gazebo_world_plugin_loader/include/**",
+        "/home/aarav2708/open_x/src/open_manipulator/my_codes/include/**",
+        "/home/aarav2708/orangewood_ws/src/orangewood_sim_stack/owl/my_owl_codes/include/**",
+        "/home/aarav2708/orangewood_ws/src/orangewood_sim_stack/3rd_party_pkgs/object_msgs_tools/include/**",
+        "/home/aarav2708/open_x/src/open_manipulator/open_manipulator_control_gui/include/**",
+        "/home/aarav2708/open_x/src/open_manipulator/open_manipulator_controller/include/**",
+        "/home/aarav2708/open_x/src/open_manipulator_controls/open_manipulator_controllers/include/**",
+        "/home/aarav2708/open_x/src/open_manipulator_controls/open_manipulator_hw/include/**",
+        "/home/aarav2708/open_x/src/open_manipulator/open_manipulator_libs/include/**",
+        "/home/aarav2708/open_x/src/open_manipulator/open_manipulator_teleop/include/**",
+        "/home/aarav2708/orangewood_ws/src/orangewood_sim_stack/3rd_party_pkgs/realsense_gazebo_plugin/include/**",
+        "/home/aarav2708/open_x/src/open_manipulator_dependencies/roboticsgroup_gazebo_plugins/include/**",
+        "/home/aarav2708/orangewood_ws/src/orangewood_sim_stack/3rd_party_pkgs/roboticsgroup_upatras_gazebo_plugins/include/**",
+        "/usr/include/**"
+      ],
+      "name": "ROS",
+      "intelliSenseMode": "gcc-x64",
+      "compilerPath": "/usr/bin/gcc",
+      "cStandard": "gnu11",
+      "cppStandard": "c++14"
+    }
+  ],
+  "version": 4
+}

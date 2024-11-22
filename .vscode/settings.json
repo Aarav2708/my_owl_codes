@@ -1,0 +1,12 @@
+{
+    "python.autoComplete.extraPaths": [
+        "/home/aarav2708/orangewood_ws/devel/lib/python3/dist-packages",
+        "/home/aarav2708/open_x/devel/lib/python3/dist-packages",
+        "/opt/ros/noetic/lib/python3/dist-packages"
+    ],
+    "python.analysis.extraPaths": [
+        "/home/aarav2708/orangewood_ws/devel/lib/python3/dist-packages",
+        "/home/aarav2708/open_x/devel/lib/python3/dist-packages",
+        "/opt/ros/noetic/lib/python3/dist-packages"
+    ]
+}
